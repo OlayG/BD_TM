@@ -5,10 +5,9 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/pageFragment">
 
-
     <fragment
         android:id="@+id/pageFragment"
         android:name="com.example.tmobileapp.view.PageFragment"
         android:label="PageFragment"
-        tools:layout="@layout/fragment_page"/>
+        tools:layout="@layout/fragment_page" />
 </navigation>

@@ -1,18 +1,23 @@
 package com.example.tmobileapp.repo
 
-import android.util.Log
-import com.example.tmobileapp.model.Page
-import com.example.tmobileapp.repo.remote.RetrofitInstance
-import retrofit2.HttpException
+import com.example.tmobileapp.repo.remote.TMobileService
+import com.example.tmobileapp.util.ApiState
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import javax.inject.Inject
 
-object PageRepo {
+class PageRepo @Inject constructor(private val tMobileService: TMobileService) {
 
-    suspend fun getPage() : Page? {
-        try {
-            return RetrofitInstance.pageService.getPage().page
-        } catch(ex: HttpException) {
-            Log.e("PageRepo", ex.message())
-        }
-        return null
-    }
+    fun getPage() = flow {
+        emit(ApiState.Loading)
+        val response = tMobileService.getTMobileResponse()
+        val state = if (response.isSuccessful) {
+            response.body()?.let {
+                ApiState.Success(it.page)
+            } ?: ApiState.Failure("No data found.")
+
+        } else ApiState.Failure("Error fetching page")
+        emit(state)
+    }.flowOn(Dispatchers.IO)
 }

@@ -1,23 +1,26 @@
 package com.example.tmobileapp.adapter
 
-import androidx.recyclerview.widget.RecyclerView
-import com.example.tmobileapp.databinding.TextItemBinding
+import android.view.ViewGroup
+import com.example.tmobileapp.adapter.base.CardViewHolder
 import com.example.tmobileapp.databinding.TitleDescItemBinding
 import com.example.tmobileapp.model.Card
-import com.example.tmobileapp.util.setAttributes
-import com.example.tmobileapp.util.setTextColor
+import com.example.tmobileapp.util.inflater
+import com.example.tmobileapp.util.loadDescription
+import com.example.tmobileapp.util.loadTitle
 
-class TitleDescCardHolder (
+class TitleDescCardHolder(
     private val binding: TitleDescItemBinding
-) : RecyclerView.ViewHolder(binding.root) {
-    fun setCard(card: Card) = with(binding) {
-        tvTitle.apply {
-            text = card.title?.value
-            card.title?.attributes?.let { setAttributes(it) }
-        }
-        tvDescription.apply {
-            text = card.description?.value
-            card.description?.attributes?.let { setAttributes(it) }
-        }
+) : CardViewHolder(binding) {
+
+    override fun bindData(card: Card): Unit = with(binding) {
+        tvTitle.loadTitle(card.title)
+        tvDescription.loadDescription(card.description)
+        return@with
+    }
+
+    companion object {
+        fun newInstance(parent: ViewGroup) = TitleDescCardHolder(
+            TitleDescItemBinding.inflate(parent.inflater, parent, false)
+        )
     }
 }

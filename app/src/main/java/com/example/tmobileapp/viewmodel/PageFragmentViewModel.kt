@@ -1,25 +1,18 @@
 package com.example.tmobileapp.viewmodel
 
-
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.asLiveData
 import com.example.tmobileapp.model.Page
 import com.example.tmobileapp.repo.PageRepo
+import com.example.tmobileapp.util.ApiState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class PageFragmentViewModel : ViewModel() {
-    private val _page = MutableLiveData<Page>()
-    val page: LiveData<Page> get() = _page
+@HiltViewModel
+class PageFragmentViewModel @Inject constructor(repo: PageRepo) : ViewModel() {
 
-    fun getPage() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val page = PageRepo.getPage()
-            page?.let {
-                _page.postValue(it)
-            }
-        }
-    }
+    val page: LiveData<ApiState<Page>> = repo.getPage().asLiveData(Dispatchers.Main)
+
 }
